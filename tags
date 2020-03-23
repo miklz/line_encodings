@@ -1,0 +1,32 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	0.0.0	/e0a976d7/
+DATA	get-pip.py	/^DATA = b"""$/;"	v
+PY2	get-pip.py	/^PY2 = sys.version_info[0] == 2$/;"	v
+PY3	get-pip.py	/^PY3 = sys.version_info[0] == 3$/;"	v
+_b85alphabet	get-pip.py	/^    _b85alphabet = (b"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"$/;"	v
+b85decode	get-pip.py	/^    def b85decode(b):$/;"	f
+bits	test.py	/^bits = [1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0]$/;"	v
+bootstrap	get-pip.py	/^def bootstrap(tmpdir=None):$/;"	f
+cert_parse_args	get-pip.py	/^    def cert_parse_args(self, args):$/;"	f	function:bootstrap	file:
+cod	test.py	/^import line_cod as cod$/;"	I
+iterbytes	get-pip.py	/^    def iterbytes(buf):$/;"	f
+iterbytes	get-pip.py	/^    iterbytes = iter$/;"	v
+main	get-pip.py	/^def main():$/;"	f
+manchester	line_cod.py	/^def manchester(bits, time_bit, v_max, v_min, time_step):$/;"	f
+np	line_cod.py	/^import numpy as np$/;"	I
+np	test.py	/^import numpy as np$/;"	I
+nrz_i	line_cod.py	/^def nrz_i(bits, time_bit, v_max, v_min, time_step):$/;"	f
+nrz_l	line_cod.py	/^def nrz_l(bits, time_bit, v_max, v_min, time_step):$/;"	f
+nrz_s	line_cod.py	/^def nrz_s(bits, time_bit, v_max, v_min, time_step):$/;"	f
+pip_entry_point	get-pip.py	/^    from pip._internal.cli.main import main as pip_entry_point$/;"	x	function:bootstrap	file:
+plt	test.py	/^import matplotlib.pyplot as plt$/;"	I
+quat_nrz	line_cod.py	/^def quat_nrz(bits, time_bit, v_max, v_min, time_step):$/;"	f
+rz_l	line_cod.py	/^def rz_l(bits, time_bit, time_ret, v_max, v_min, time_step):$/;"	f
+t	test.py	/^vector, t = cod.nrz_i(bits, time_bit = 1, v_max = 5, v_min = 0, time_step = 0.01)$/;"	v
+vector	test.py	/^vector, t = cod.nrz_i(bits, time_bit = 1, v_max = 5, v_min = 0, time_step = 0.01)$/;"	v
