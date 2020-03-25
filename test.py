@@ -4,21 +4,23 @@ import line_cod as cod
 import bit_rate_calc as br
 import matplotlib.pyplot as plt
 
-N = np.random.randint(32, 16000)
+N = 20 #np.random.randint(32, 16000)
 if N%2 != 0: N+=1
 
 print(N)
 bits = np.random.randint(2, size = N)
 
 # Transmission and reception
-line_freq, t = cod.rz_l(bits = bits, time_simb = 0.001, v_max = 5, v_min = -5)
-x = br.bit_transmitter(line_freq, 0.001, 0.001, 0.5, 6, 20)
+line_freq, t = cod.rz_l(bits = bits, time_simb = 1, v_max = 5, v_min = -5)
+#plt.plot(t,line_freq)
+x = br.bit_transmitter(line_freq, 1, 0.001, 0.5, 6, 20)
 r = br.channel(x, 0.001, 30)
-y = br.bit_receiver(r, 0.001, 0.001, 0.5, 6, 20)
+y = br.bit_receiver(r, 1, 0.001, 0.5, 6, 20)
+bits_received = br.demodulator(y, 1, 0)
 
-plt.plot(x, 'y')
-plt.plot(r, 'r')
-plt.plot(y, 'g')
+print(bits)
+print(bits_received[0:40])
+plt.plot(y)
 plt.show()
 
 # Bit energy x Error 

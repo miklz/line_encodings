@@ -29,6 +29,7 @@ def channel(signal, Eb, EbNodb):
     sigma = np.sqrt(No/2)
 
     r = signal + sigma*np.random.random(len(signal))
+    print("r", len(r))
 
     return r
 
@@ -36,6 +37,27 @@ def bit_receiver(signal, Tb, Eb, alfa, span, sps):
     A = np.sqrt(Eb/Tb)
 
     c = psd.rcosfilter(len(signal), alfa, span, sps)
-    y = upfirdn(A*np.sqrt(Tb)*c, signal, down = 1, up = sps)
+    y = upfirdn(A*np.sqrt(Tb)*c, signal, up = sps)
+    print("y:", len(y))
 
     return y
+
+def demodulator(signal, Tb, threshold):
+    bits = np.zeros(len(signal), dtype = int)
+    time_ref = np.linspace(0, len(signal), len(signal)) 
+
+    j = 0
+    index = 0
+    time_s = 1120
+    while j < len(signal):
+        if  abs(signal[j]) > 0.005:
+            if signal[j] > threshold:
+                bits[index] = 1
+            else: bits[index] = 0
+        
+            if time_ref[j] > time_s:
+                time_s += 102
+                index += 1
+        j+=1
+
+    return bits
