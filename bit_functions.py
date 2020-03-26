@@ -19,7 +19,7 @@ def bit_transmitter(bits, Tb, Eb, alfa, span, sps):
     A = np.sqrt(Eb/Tb)
 
     c = psd.rcosfilter(len(bits), alfa, span, sps)
-    s = upfirdn(A*np.sqrt(Tb)*c, bits, down = sps)
+    s = upfirdn(A*np.sqrt(Tb)*c, bits, up = sps)
 
     return s
 
@@ -29,7 +29,6 @@ def channel(signal, Eb, EbNodb):
     sigma = np.sqrt(No/2)
 
     r = signal + sigma*np.random.random(len(signal))
-    print("r", len(r))
 
     return r
 
@@ -37,27 +36,25 @@ def bit_receiver(signal, Tb, Eb, alfa, span, sps):
     A = np.sqrt(Eb/Tb)
 
     c = psd.rcosfilter(len(signal), alfa, span, sps)
-    y = upfirdn(A*np.sqrt(Tb)*c, signal, up = sps)
-    print("y:", len(y))
+    y = upfirdn(A*np.sqrt(Tb)*c, signal, down = sps)
+
+    # Keeping only the signal
+    for x in range(len(y)):
+        if abs(y[x]) > 0.005:
+            break
+
+    y = y[x:len(y)-x]
 
     return y
 
-def demodulator(signal, Tb, threshold):
-    bits = np.zeros(len(signal), dtype = int)
-    time_ref = np.linspace(0, len(signal), len(signal)) 
-
-    j = 0
-    index = 0
-    time_s = 1120
-    while j < len(signal):
-        if  abs(signal[j]) > 0.005:
-            if signal[j] > threshold:
-                bits[index] = 1
-            else: bits[index] = 0
-        
-            if time_ref[j] > time_s:
-                time_s += 102
-                index += 1
-        j+=1
-
+def text_to_bits(text, encoding='utf-8', errors='surrogatepass'):
+    bits = bin(int.from_bytes(text.encode(encoding, errors), 'big'))[2:]
+    bits = bits.zfill(8 * ((len(bits) + 7) // 8))
+    bits = [int(s) for s in bits]
     return bits
+
+def text_from_bits(bits, encoding='utf-8', errors='surrogatepass'):
+    bits = map(str, bits)
+    bits = ''.join(bits)
+    n = int(bits, 2)
+    return n.to_bytes((n.bit_length() + 7) // 8, 'big').decode(encoding, errors) or '\0'
