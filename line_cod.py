@@ -120,7 +120,7 @@ def manchester(bits, time_simb, v_max, v_min):
     return new_vector, shift_time
 
 def demod_l(signal, threshold):
-    bits = np.zeros(int(len(signal)/100)+1, dtype = int)
+    bits = np.zeros(int(len(signal)/90), dtype = int)
     time_ref = np.linspace(0, len(signal), len(signal)) 
 
     j = 0
@@ -136,7 +136,17 @@ def demod_l(signal, threshold):
             index += 1
         j+=1
 
-    return bits[:-1]
+    sinc = np.array([1, 0, 0, 0, 0, 0, 0, 1])
+    for x in range(len(bits)):
+        if (bits[x:x+len(sinc)] == sinc).all():
+            bits = bits[x+len(sinc):]
+            break
+    for y in range(len(bits), 0, -1):
+        if (bits[y-len(sinc):y] == sinc).all():
+            bits = bits[:y-len(sinc)]
+            break
+
+    return bits
 
 def demod_s(signal, threshold): 
     bits_l = demod_l(signal, threshold)

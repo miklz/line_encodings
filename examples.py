@@ -1,61 +1,88 @@
-import psd
 import numpy as np
 import line_cod as cod
 import bit_functions as bf
+import bit_statistic as bs
 import matplotlib.pyplot as plt
 
-#N = 20 #np.random.randint(32, 16000)
-#if N%2 != 0: N+=1
 
-#print(N)
-#bits = np.random.randint(2, size = N)
-#print(bits)
-message = "hi"
+message = "hello world!!!"
 print("message being send: ", message)
 bits = bf.text_to_bits(message)
+sinc = [1, 0, 0, 0, 0, 0, 0, 1]
+bits = sinc+bits+sinc
 print(bits)
 # Transmission and reception
-line_freq, t = cod.nrz_i(bits = bits, time_simb = 1, v_max = 5, v_min = -5)
-#plt.plot(t,line_freq)
+line_freq, t = cod.nrz_l(bits = bits, time_simb = 1, v_max = 5, v_min = 0)
 x = bf.bit_transmitter(line_freq, 1, 0.001, 0.5, 6, 20)
-r = bf.channel(x, 0.001, 10)
+r = bf.channel(x, 0.001, 0.1)
 y = bf.bit_receiver(r, 1, 0.001, 0.5, 6, 20)
 plt.plot(y)
 plt.show()
-bits_received = cod.demod_i(y, 0)
+bits_received = cod.demod_l(y, 0.06)
 print(bits_received)
 print("message received:", bf.text_from_bits(bits_received))
 
-#print(bits)
-print(bits_received)
 
-# Bit energy x Error 
-#x = np.arange(0, 30, 0.1)
-#EbpNo = 10**(x/10)
-#y = psd.qfunc(np.sqrt(2*EbpNo))
-#z = psd.qfunc(np.sqrt(EbpNo))
-#plt.plot(x, y)
-#plt.plot(x, z, 'r')
-#plt.yscale('log')
-#plt.show()
+"""
+# Bit energy x Error
+# This block will plot a log graph comparing the energy by bit versus the error
+# produced when this energy is increased or decreased
+x = np.arange(0, 30, 0.1)
+EbpNo = 10**(x/10)
+y = bs.qfunc(np.sqrt(2*EbpNo))
+z = bs.qfunc(np.sqrt(EbpNo))
+plt.plot(x, y)
+plt.plot(x, z, 'r')
+plt.yscale('log')
+plt.show()
+"""
 
-# Power spectral density of each codification 
-#line_freq, t = cod.rz_l(bits = bits, time_simb = 0.001, v_max = 5, v_min = -5)
-#X, s = psd.psd(line_freq, t)
-#plt.plot(s, abs((X)))
-#plt.show()
+"""
+N = np.random.randint(32, 16000)
+if N%2 != 0: N+=1 ## making sure the number of bits it's even, this is only required to the polar quaternary line encode
+bits = np.random.randint(2, size = N)
 
+
+# Power spectral density
+# Substitute the line codification to see the energy occupied in each lobe
+line_freq, t = cod.rz_l(bits = bits, time_simb = 0.001, v_max = 5, v_min = 0)
+X, s = bs.psd(line_freq, t)
+plt.plot(s, X)
+vector, t = cod.nrz_l(bits, time_simb = 0.001, v_max = 5, v_min = 0)
+X, s = bs.psd(vector, t)
+plt.plot(s, X, 'r')
+#vector, t = cod.quat_nrz(bits, time_simb = 1, v_max = 5, v_min = -5)
+#vector, t = cod.nrz_s(bits, time_simb = 0.001, v_max = 5, v_min = 0)
+#X, s = bs.psd(vector, t)
+#plt.plot(s, X, 'y')
+#vector, t = cod.nrz_i(bits, time_simb = 0.001, v_max = 5, v_min = 0)
+#plt.plot(s, X, 'm')
+vector, t = cod.manchester(bits, time_simb = 0.001, v_max = 5, v_min = 0)
+X, s = bs.psd(vector, t)
+plt.plot(s, X, 'g')
+plt.xlim(0, 2000)
+plt.show()
+"""
+
+"""
 # Test to see the bit rate, variance and standard deviation of each
 # codification
-#rb, variance, des = br.calc_rate_simb(cod.manchester, bits, ts = 0.001, v_max = 5, v_min = 0)
-#print(rb, variance, des)
+rb, variance, des = br.calc_rate_simb(cod.manchester, bits, ts = 0.001, v_max = 5, v_min = 0)
+print(rb, variance, des)
+"""
 
+"""
 # Testing each line codification
-#vector, t = cod.nrz_l(bits, time_simb = 0.2, v_max = 5, v_min = -5)
+# Uncomment the line codification of interest to see the plot
+N = np.random.randint(32, 16000)
+if N%2 != 0: N+=1 ## making sure the number of bits it's even, this is only required to the polar quaternary line encode
+bits = np.random.randint(2, size = N)
+vector, t = cod.nrz_l(bits, time_simb = 0.2, v_max = 5, v_min = -5)
 #vector, t = cod.rz_l(bits = bits, time_simb = 0.001, v_max = 5, v_min = -5)
 #vector, t = cod.quat_nrz(bits, time_simb = 1, v_max = 5, v_min = -5)
 #vector, t = cod.nrz_s(bits, time_simb = 1, v_max = 5, v_min = 0)
 #vector, t = cod.nrz_i(bits, time_simb = 0.001, v_max = 5, v_min = 0)
 #vector, t = cod.manchester(bits, time_simb = 1, v_max = 5, v_min = 0)
-#plt.plot(t, vector)
-#plt.show()
+plt.plot(t, vector)
+plt.show()
+"""

@@ -1,24 +1,15 @@
-import psd
 import numpy as np
 from scipy.signal import upfirdn
 
-def calc_rate_simb(codification, bits, ts, v_max, v_min):
-
-    vector, _ = codification(bits = bits, time_simb = ts, v_max = v_max, v_min
-            = v_min)
-    
-    rb = (1/ts)*np.log2(len(np.unique(vector, return_counts = True)))
-
-    variance = np.var(vector)
-    
-    des = np.sqrt(variance)
-
-    return rb, variance, des
+def rcosfilter(N, beta, Ts, Fs):
+    t = (np.arange(N) - N / 2)/Fs
+    return np.where(np.abs(2*t) == Ts / beta,
+        (np.pi / (4*Ts)) * np.sinc(1/2*beta),
+        (1/Ts)*np.sinc(t/Ts) * np.cos(np.pi*beta*t/Ts) / (1 - (2*beta*t/Ts) ** 2))
 
 def bit_transmitter(bits, Tb, Eb, alfa, span, sps):
     A = np.sqrt(Eb/Tb)
-
-    c = psd.rcosfilter(len(bits), alfa, span, sps)
+    c = rcosfilter(len(bits), alfa, span, sps)
     s = upfirdn(A*np.sqrt(Tb)*c, bits, up = sps)
 
     return s
@@ -29,21 +20,13 @@ def channel(signal, Eb, EbNodb):
     sigma = np.sqrt(No/2)
 
     r = signal + sigma*np.random.random(len(signal))
-
+    
     return r
 
 def bit_receiver(signal, Tb, Eb, alfa, span, sps):
     A = np.sqrt(Eb/Tb)
-
-    c = psd.rcosfilter(len(signal), alfa, span, sps)
+    c = rcosfilter(len(signal), alfa, span, sps)
     y = upfirdn(A*np.sqrt(Tb)*c, signal, down = sps)
-
-    # Keeping only the signal
-    for x in range(len(y)):
-        if abs(y[x]) > 0.005:
-            break
-
-    y = y[x:len(y)-x]
 
     return y
 
