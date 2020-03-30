@@ -3,9 +3,12 @@ from scipy.signal import upfirdn
 
 def rcosfilter(N, beta, Ts, Fs):
     t = (np.arange(N) - N / 2)/Fs
-    return np.where(np.abs(2*t) == Ts / beta,
+    existing = np.seterr(divide="ignore")
+    c_filter = np.where(np.abs(2*t) == Ts / beta,
         (np.pi / (4*Ts)) * np.sinc(1/2*beta),
         (1/Ts)*np.sinc(t/Ts) * np.cos(np.pi*beta*t/Ts) / (1 - (2*beta*t/Ts) ** 2))
+    np.seterr(**existing)
+    return c_filter
 
 def bit_transmitter(bits, Tb, Eb, alfa, span, sps):
     A = np.sqrt(Eb/Tb)
@@ -19,7 +22,7 @@ def channel(signal, Eb, EbNodb):
     No = Eb/EbNo
     sigma = np.sqrt(No/2)
 
-    r = signal + sigma*np.random.random(len(signal))
+    r = signal + sigma*(2*np.random.random(len(signal)) - 1)
     
     return r
 
