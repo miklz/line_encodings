@@ -32,14 +32,22 @@
   The way that the functions were made, they can be unipolar or bipolar, this
   only depends of the parameters v_min and v_max passed to the functions.
 
+  Here's an example of the NRZ codification:
+  ![NRZ codification](images/nrz.png)
+
 ## Analysis
 
-  The analysis made refers to the variance, standard deviation and power spectrum density of each codification line. At the moment I'm implementin  g the error produced by the channel in the communication system, the goal is to observe how the noise produced by the channel in the transmissio  n can affect a message being send.
+  The analysis made refers to the variance, standard deviation and power spectrum density of each codification line.
+  ![Power Spectrum Density](images/psd.png)
+
+  Also is possible to see how the error decreases when the energy increases and
+  the diference among the unipolars, bipolars and multilevel line encodings.
+  ![Error x Energy](images/pd_br.png)
 
 ## How to start
 
   There's a file example ready to run the code, the file is divided in blocks,
-  in wich block there's a comment explaning what that particular block does.
+  on each block there's a comment explaning what that particular block does.
 
 ### Python requirements
 

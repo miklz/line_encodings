@@ -4,7 +4,7 @@ import bit_functions as bf
 import bit_statistic as bs
 import matplotlib.pyplot as plt
 
-"""
+
 # Testing each line codification
 # Uncomment the line codification of interest to see the plot
 bits = [1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0]
@@ -15,8 +15,11 @@ vector, t = cod.nrz_l(bits, time_simb = 0.2, v_max = 5, v_min = -5)
 #vector, t = cod.nrz_i(bits, time_simb = 0.001, v_max = 5, v_min = 0)
 #vector, t = cod.manchester(bits, time_simb = 1, v_max = 5, v_min = 0)
 plt.plot(t, vector)
+plt.title('bits = [1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0]')
+plt.xlabel('time (s)')
+plt.ylabel('Voltage (V)')
 plt.show()
-"""
+
 
 """
 # Test to see the bit rate, variance and standard deviation for a given
@@ -58,7 +61,7 @@ plt.legend(loc = 'upper right')
 plt.show()
 """
 
-
+"""
 # Spectral density x bit rate
 N = np.random.randint(32, 16000)
 bits = np.random.randint(2, size = N)
@@ -83,7 +86,7 @@ plt.xlabel('Frequency (Hz)')
 plt.ylabel('Power Density (V²/Hz)')
 plt.legend(loc = 'upper right')
 plt.show()
-
+"""
 
 # Bit energy x Error
 # This block will plot a log graph comparing the energy by bit versus the error
