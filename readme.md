@@ -40,9 +40,9 @@
   The analysis made refers to the variance, standard deviation and power spectrum density of each codification line.
   ![Power Spectrum Density](images/psd.png)
 
-  Also is possible to see how the error decreases when the energy increases and
+  Also is possible to see how the error probability decreases when the energy increases and
   the diference among the unipolars, bipolars and multilevel line encodings.
-  ![Error x Energy](images/pd_br.png)
+  ![Error x Energy](images/error_prob.png)
 
 ## How to start
 
