@@ -23,7 +23,7 @@ def channel(signal, Eb, EbNodb):
     sigma = np.sqrt(No/2)
 
     r = signal + sigma*(2*np.random.random(len(signal)) - 1)
-    
+
     return r
 
 def bit_receiver(signal, Tb, Eb, alfa, span, sps):

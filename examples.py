@@ -4,22 +4,22 @@ import bit_functions as bf
 import bit_statistic as bs
 import matplotlib.pyplot as plt
 
-
 # Testing each line codification
 # Uncomment the line codification of interest to see the plot
 bits = [1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0]
-vector, t = cod.nrz_l(bits, time_simb = 0.2, v_max = 5, v_min = -5)
+#vector, t = cod.nrz_l(bits, time_simb = 0.2, v_max = 5, v_min = -5)
 #vector, t = cod.rz_l(bits = bits, time_simb = 0.001, v_max = 5, v_min = -5)
 #vector, t = cod.quat_nrz(bits, time_simb = 1, v_max = 5, v_min = -5)
 #vector, t = cod.nrz_s(bits, time_simb = 1, v_max = 5, v_min = 0)
 #vector, t = cod.nrz_i(bits, time_simb = 0.001, v_max = 5, v_min = 0)
-#vector, t = cod.manchester(bits, time_simb = 1, v_max = 5, v_min = 0)
+vector, t = cod.manchester(bits, time_simb = 1, v_max = 1, v_min = -1)
 plt.plot(t, vector)
 plt.title('bits = [1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0]')
 plt.xlabel('time (s)')
 plt.ylabel('Voltage (V)')
 plt.show()
-
+received = cod.demod_manch(vector)
+print("bits received:", received)
 
 """
 # Test to see the bit rate, variance and standard deviation for a given
@@ -27,7 +27,6 @@ plt.show()
 rb, variance, des = br.calc_rate_simb(cod.manchester, bits, ts = 0.001, v_max = 5, v_min = 0)
 print(rb, variance, des)
 """
-
 
 """
 N = np.random.randint(32, 16000)
@@ -113,19 +112,15 @@ plt.show()
 """
 
 """
+### This block needs more work to function properly
 message = "Let's see how many characters are wrong in this text"
 print("message being send: ", message)
 bits = bf.text_to_bits(message)
-# Add sincronization bits at the beginning and the end
-sinc = [1, 0, 0, 0, 0, 0, 0, 1]
-bits = sinc+bits+sinc
 # Transmission and reception
-line_freq, t = cod.nrz_l(bits = bits, time_simb = 1, v_max = 5, v_min = -5)
-x = bf.bit_transmitter(line_freq, 1, 0.001, 0.5, 6, 20)
+line_freq, t = cod.manchester(bits = bits, time_simb = 1e-3, v_max = 5, v_min = -5, fs=100)
+x = bf.bit_transmitter(line_freq, 1, 0.001, 0.5, 6, 100)
 r = bf.channel(x, 1, 0)
-y = bf.bit_receiver(r, 1, 0.001, 0.5, 6, 20)
-plt.plot(y)
-plt.show()
-bits_received = cod.demod_l(y, 0)
+y = bf.bit_receiver(r, 1, 0.001, 0.5, 6, 100)
+bits_received = cod.demod_manch(y, 100)
 print("message received:", bf.text_from_bits(bits_received))
 """

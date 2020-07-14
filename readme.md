@@ -56,7 +56,12 @@
   - Scipy
   - Matplotlib
 
+  They can be easily installed with pip
+  ```shell
+  pip3 install "package"
+  ```
+
 ## To do
 
-  - Demodulate manchester and polar quaternary line encoders
-  - Improve the charts
+  - Demodulate polar quaternary line encode
+  - Correct the channel simulation

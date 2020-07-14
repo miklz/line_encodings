@@ -1,26 +1,26 @@
 import numpy as np
 
-def nrz_l(bits, time_simb, v_max, v_min):
+def nrz_l(bits, time_simb, v_max, v_min, fs=100):
     vector = np.array(bits)
-    new_vector = np.arange(0, len(bits)*time_simb, time_simb/100)
+    new_vector = np.arange(0, len(bits)*time_simb, time_simb/fs)
     shift_time = np.linspace(0, len(bits)*time_simb, len(new_vector))
-    time_p = time_simb 
+    time_p = time_simb
     index = 0
     j = 0
     while j < len(new_vector):
-        if vector[index] == 1: 
-            new_vector[j] = v_max 
-        else: 
-            new_vector[j] = v_min 
+        if vector[index] == 1:
+            new_vector[j] = v_max
+        else:
+            new_vector[j] = v_min
         if shift_time[j] > time_p:
             time_p += time_simb
             index += 1
         j += 1
     return new_vector, shift_time
 
-def nrz_s(bits, time_simb, v_max, v_min):
+def nrz_s(bits, time_simb, v_max, v_min, fs=100):
     vector = np.array(bits)
-    new_vector = np.arange(0, len(bits)*time_simb, time_simb/100)
+    new_vector = np.arange(0, len(bits)*time_simb, time_simb/fs)
     shift_time = np.linspace(0, len(bits)*time_simb, len(new_vector))
     time_p = time_simb
     new_vector[0] = v_min
@@ -37,9 +37,9 @@ def nrz_s(bits, time_simb, v_max, v_min):
         j += 1
     return new_vector, shift_time
 
-def nrz_i(bits, time_simb, v_max, v_min):
+def nrz_i(bits, time_simb, v_max, v_min, fs=100):
     vector = np.array(bits)
-    new_vector = np.arange(0, len(bits)*time_simb, time_simb/100)
+    new_vector = np.arange(0, len(bits)*time_simb, time_simb/fs)
     shift_time = np.linspace(0, len(bits)*time_simb, len(new_vector))
     time_p = time_simb
     new_vector[0] = v_min
@@ -56,30 +56,30 @@ def nrz_i(bits, time_simb, v_max, v_min):
         j += 1
     return new_vector, shift_time
 
-def rz_l(bits, time_simb, v_max, v_min, time_ret=0.2):
+def rz_l(bits, time_simb, v_max, v_min, time_ret=0.2, fs=100):
     vector = np.array(bits)
-    new_vector = np.arange(0, len(bits)*time_simb, time_simb/100)
+    new_vector = np.arange(0, len(bits)*time_simb, time_simb/fs)
     shift_time = np.linspace(0, len(bits)*time_simb, len(new_vector))
     time_p = time_simb
     index = 0
     j = 0
 
     while j < len(new_vector):
-        if vector[index] == 1: 
-            new_vector[j] = v_max 
-        else: 
+        if vector[index] == 1:
+            new_vector[j] = v_max
+        else:
             new_vector[j] = v_min
         if shift_time[j] > time_p - time_simb*time_ret: new_vector[j] = 0
-        if shift_time[j] > time_p: 
+        if shift_time[j] > time_p:
             time_p += time_simb
             index += 1
         j += 1
 
     return new_vector, shift_time
 
-def quat_nrz(bits, time_simb, v_max, v_min):
+def quat_nrz(bits, time_simb, v_max, v_min, fs=100):
     vector = np.array(bits)
-    new_vector = np.arange(0, len(bits)*time_simb, time_simb/100)
+    new_vector = np.arange(0, len(bits)*time_simb, time_simb/fs)
     shift_time = np.linspace(0, len(bits)*time_simb/2, len(new_vector))
     time_p = time_simb
     index = 0
@@ -97,9 +97,9 @@ def quat_nrz(bits, time_simb, v_max, v_min):
 
     return new_vector, shift_time
 
-def manchester(bits, time_simb, v_max, v_min):
+def manchester(bits, time_simb, v_max, v_min, fs=100):
     vector = np.array(bits)
-    new_vector = np.arange(0, len(bits)*time_simb, time_simb/100)
+    new_vector = np.arange(0, len(bits)*time_simb, time_simb/fs)
     shift_time = np.linspace(0, len(bits)*time_simb, len(new_vector))
     time_p = time_simb
     index = 0
@@ -116,43 +116,29 @@ def manchester(bits, time_simb, v_max, v_min):
             time_p += time_simb
             index += 1 
         j += 1
-    
+
     return new_vector, shift_time
 
-def demod_l(signal, threshold):
-    bits = np.zeros(int(len(signal)/90), dtype = int)
-    time_ref = np.linspace(0, len(signal), len(signal)) 
+def demod_l(signal, threshold, fs=100):
+    bits = np.zeros(int(len(signal)/fs), dtype = int)
 
-    j = 0
+    j = round(fs/4)
     index = 0
-    time_s = 50
     while j < len(signal):
         if signal[j] > threshold:
             bits[index] = 1
         else: bits[index] = 0
-        
-        if time_ref[j] > time_s:
-            time_s += 100
-            index += 1
-        j+=1
 
-    sinc = np.array([1, 0, 0, 0, 0, 0, 0, 1])
-    for x in range(len(bits)):
-        if (bits[x:x+len(sinc)] == sinc).all():
-            bits = bits[x+len(sinc):]
-            break
-    for y in range(len(bits), 0, -1):
-        if (bits[y-len(sinc):y] == sinc).all():
-            bits = bits[:y-len(sinc)]
-            break
+        index += 1
+        j+=fs
 
     return bits
 
-def demod_s(signal, threshold): 
+def demod_s(signal, threshold):
     bits_l = demod_l(signal, threshold)
     bits = np.zeros(len(bits_l), dtype = int)
     bits[0] = bits_zl[0]
-    
+
     j = 1
     while j < len(bits_zl):
         if bits_l[j] != bits_l[j-1]:
@@ -163,11 +149,11 @@ def demod_s(signal, threshold):
 
     return bits
 
-def demod_i(signal, threshold): 
+def demod_i(signal, threshold):
     bits_l = demod_l(signal, threshold)
     bits = np.zeros(len(bits_l), dtype = int)
     bits[0] = bits_l[0]
-    
+
     j = 1
     while j < len(bits_l):
         if bits_l[j] != bits_l[j-1]:
@@ -175,5 +161,20 @@ def demod_i(signal, threshold):
         else: bits[j] = 0
 
         j+=1
+
+    return bits
+
+def demod_manch(signal, fs=100):
+    bits = np.zeros(int(len(signal)/fs), dtype=int)
+
+    j = round(fs/2)
+    index = 0
+    while j < len(signal):
+        if signal[int(j - fs/4)] > signal[int(j + fs/4)]:
+            bits[index] = 0
+        else:
+            bits[index] = 1
+        index += 1
+        j += fs
 
     return bits
